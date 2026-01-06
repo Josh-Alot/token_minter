@@ -23,6 +23,32 @@ contract BurnoutToken is ERC20 {
         uint256 timestamp
     );
 
+    // Token approval event
+    event TokensApproved(
+        address indexed owner,
+        address indexed spender,
+        uint256 amount,
+        uint256 timestamp
+    );
+    
+    // Token transfer event
+    event TokensTranferred(
+        address indexed from,
+        address indexed to,
+        uint256 amount,
+        uint256 newBalanceFrom,
+        uint256 newBalanceTo,
+        uint256 timestamp
+    );
+
+    // Token burn event
+    event TokensBurned(
+        address indexed burner,
+        uint256 amount,
+        uint256 newTotalSupply,
+        uint256 timestamp
+    );
+
     // Contract change event
     event ContractEvent(
         string eventType,
@@ -51,4 +77,30 @@ contract BurnoutToken is ERC20 {
         emit TokensMinted(msg.sender, to, amount, totalSupply(), block.timestamp);
         emit ContractEvent("TOKENS_MINTED", msg.sender, to, amount, block.timestamp);
     }
+
+    /** TOKEN UPDATES **/
+    function _update(address from, address to, uint256 amount) internal override {
+        super._update(from, to, amount);
+
+        // token transfer event emitting
+        if (from != address(0) && to != address(0)) {
+            emit TokensTranferred(from, to, amount, balanceOf(from), balanceOf(to), block.timestamp);
+            emit ContractEvent("TOKENS_TRANSFERED", from, to, amount, block.timestamp);
+        }
+
+        // token burn event emitting
+        if (from != address(0) && to == address(0)) {
+            emit TokensBurned(from, amount, totalSupply(), block.timestamp);
+            emit ContractEvent("TOKENS_BURNED", from, address(0), amount, block.timestamp);
+        }
+    }
+
+    /** TOKEN APPROVALS **/
+    function _approve(address owner, address spender, uint256 value, bool emitEvent) internal override {
+        super._approve(owner, spender, value, emitEvent);
+
+        emit TokensApproved(owner, spender, value, block.timestamp);
+        emit ContractEvent("TOKENS_APPROVED", owner, spender, value, block.timestamp);
+    }
+
 }
