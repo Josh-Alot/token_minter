@@ -72,19 +72,19 @@ export function TokenInfo() {
   }
 
   return (
-    <div className="glass rounded-2xl p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white text-xl font-bold shadow-lg">
+    <div className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-purple">
           ℹ️
         </div>
-        <h2 className="text-2xl font-bold text-white">
+        <h2 className="text-3xl font-black text-white tracking-tight">
           Token Information
         </h2>
       </div>
       
       <div className="space-y-6">
         {/* Contract Address */}
-        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/[0.07] transition-all">
           <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
             Contract Address
           </p>
@@ -105,28 +105,28 @@ export function TokenInfo() {
         </div>
 
         {/* Name and Symbol */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-purple-500/30">
-            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/25 to-blue-500/25 border border-purple-500/40 hover:border-purple-500/60 transition-all">
+            <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
               Name
             </p>
-            <p className="text-xl font-bold text-white">
+            <p className="text-2xl font-black text-white">
               {name || (
                 <span className="inline-flex items-center gap-2">
-                  <span className="animate-pulse">Loading...</span>
+                  <span className="animate-pulse text-zinc-500">Loading...</span>
                 </span>
               )}
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30">
-            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-cyan-500/25 to-blue-500/25 border border-cyan-500/40 hover:border-cyan-500/60 transition-all">
+            <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
               Symbol
             </p>
-            <p className="text-xl font-bold text-white">
+            <p className="text-2xl font-black text-white">
               {symbol || (
                 <span className="inline-flex items-center gap-2">
-                  <span className="animate-pulse">Loading...</span>
+                  <span className="animate-pulse text-zinc-500">Loading...</span>
                 </span>
               )}
             </p>
@@ -134,14 +134,14 @@ export function TokenInfo() {
         </div>
 
         {/* Total Supply */}
-        <div className="p-5 rounded-xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 border border-blue-500/30">
-          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+        <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-500/25 via-purple-500/25 to-pink-500/25 border border-blue-500/40 hover:border-blue-500/60 transition-all">
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
             Total Supply
           </p>
-          <p className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <p className="text-3xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             {totalSupply ? (
               <>
-                {formatEther(totalSupply)} <span className="text-white text-lg">{symbol || ''}</span>
+                {formatEther(totalSupply)} <span className="text-white text-xl">{symbol || ''}</span>
               </>
             ) : (
               <span className="text-white animate-pulse">Loading...</span>
@@ -151,14 +151,14 @@ export function TokenInfo() {
 
         {/* User Balance */}
         {mounted && isConnected && address && (
-          <div className="p-5 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 glow-green">
-            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-green-500/25 to-emerald-500/25 border border-green-500/40 hover:border-green-500/60 transition-all glow-green">
+            <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
               Your Balance
             </p>
-            <p className="text-3xl font-bold text-green-400">
+            <p className="text-4xl font-black text-green-400">
               {balance ? (
                 <>
-                  {formatEther(balance)} <span className="text-white text-xl">{symbol || ''}</span>
+                  {formatEther(balance)} <span className="text-white text-2xl">{symbol || ''}</span>
                 </>
               ) : (
                 <span className="animate-pulse">Loading...</span>

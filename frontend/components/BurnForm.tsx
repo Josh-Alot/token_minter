@@ -130,16 +130,16 @@ export function BurnForm() {
   }
 
   return (
-    <form onSubmit={handleBurn} className="glass rounded-2xl p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 space-y-6">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-xl font-bold shadow-lg glow-red">
+    <form onSubmit={handleBurn} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 via-orange-500 to-amber-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-red">
           🔥
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
             Burn Tokens
           </h2>
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-zinc-400 font-medium mt-1">
             Permanently destroy tokens
           </p>
         </div>
@@ -154,10 +154,10 @@ export function BurnForm() {
       )}
 
       <div>
-        <label htmlFor="burn-amount" className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+        <label htmlFor="burn-amount" className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
           Amount to Burn
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <input
             id="burn-amount"
             type="number"
@@ -167,20 +167,20 @@ export function BurnForm() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             required
-            className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
+            className="flex-1 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 focus:bg-white/8 transition-all font-medium"
           />
           {balance !== undefined && (
             <button
               type="button"
               onClick={handleMaxBurn}
-              className="px-4 py-3 text-sm font-semibold text-white bg-red-500/20 hover:bg-red-500/30 rounded-xl border border-red-500/30 transition-all whitespace-nowrap"
+              className="px-5 py-4 text-sm font-bold text-white bg-red-500/20 hover:bg-red-500/30 rounded-2xl border border-red-500/30 transition-all whitespace-nowrap hover:scale-105"
             >
               Max
             </button>
           )}
         </div>
         {address && (
-          <p className="mt-2 text-xs text-zinc-500 font-mono">
+          <p className="mt-3 text-xs text-zinc-500 font-mono">
             {formatAddress(address)}
           </p>
         )}
@@ -214,7 +214,7 @@ export function BurnForm() {
       <button
         type="submit"
         disabled={isPending || isConfirming || !amount || (balance !== undefined && parseEther(amount || '0') > balance)}
-        className="w-full px-6 py-4 text-base font-semibold text-white bg-gradient-to-r from-red-600 to-orange-600 rounded-xl hover:from-red-700 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] glow-red relative overflow-hidden group"
+        className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 rounded-2xl hover:from-red-700 hover:via-orange-700 hover:to-amber-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-red relative overflow-hidden group"
       >
         <span className="relative z-10 flex items-center justify-center gap-2">
           {isPending ? (

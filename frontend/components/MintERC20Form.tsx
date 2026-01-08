@@ -118,23 +118,23 @@ export function MintERC20Form() {
 
   return (
     <>
-      <form onSubmit={handleMint} className="glass rounded-2xl p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 space-y-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xl font-bold shadow-lg glow-blue">
+      <form onSubmit={handleMint} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-blue">
             🪙
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               Mint Tokens
             </h2>
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-zinc-400 font-medium mt-1">
               Create new tokens on the network
             </p>
           </div>
         </div>
 
         <div>
-          <label htmlFor="amount" className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+          <label htmlFor="amount" className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
             Amount
           </label>
           <input
@@ -146,15 +146,15 @@ export function MintERC20Form() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             required
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 focus:bg-white/8 transition-all font-medium"
           />
         </div>
 
         <div>
-          <label htmlFor="recipient" className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+          <label htmlFor="recipient" className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
             Recipient Address
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <input
               id="recipient"
               type="text"
@@ -162,18 +162,18 @@ export function MintERC20Form() {
               onChange={(e) => setRecipientAddress(e.target.value)}
               placeholder="0x..."
               required
-              className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono text-sm"
+              className="flex-1 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 focus:bg-white/8 transition-all font-mono text-sm"
             />
             <button
               type="button"
               onClick={handleAutoFill}
-              className="px-4 py-3 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 transition-all whitespace-nowrap"
+              className="px-5 py-4 text-sm font-bold text-white bg-white/10 hover:bg-white/20 rounded-2xl border border-white/20 transition-all whitespace-nowrap hover:scale-105"
             >
               My Address
             </button>
           </div>
           {address && (
-            <p className="mt-2 text-xs text-zinc-500 font-mono">
+            <p className="mt-3 text-xs text-zinc-500 font-mono">
               {formatAddress(address)}
             </p>
           )}
@@ -194,7 +194,7 @@ export function MintERC20Form() {
         <button
           type="submit"
           disabled={isPending || isConfirming || !amount || !recipientAddress}
-          className="w-full px-6 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] glow-blue relative overflow-hidden group"
+          className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 rounded-2xl hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-blue relative overflow-hidden group"
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
             {isPending ? (
