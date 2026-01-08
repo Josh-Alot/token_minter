@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Token Minter Frontend
 
-## Getting Started
+Interface web para fazer mint de tokens ERC-20 usando o contrato BurnoutToken.
 
-First, run the development server:
+## Funcionalidades
+
+- ✅ Conexão com wallet (MetaMask, Injected, WalletConnect)
+- ✅ Mint de tokens ERC-20 para qualquer endereço
+- ✅ Auto-fill do endereço da wallet conectada
+- ✅ Modal de confirmação após mint bem-sucedido
+- ✅ Suporte para Sepolia testnet e Hardhat local
+
+## Configuração
+
+### 1. Instalar dependências
+
+```bash
+npm install
+```
+
+### 2. Configurar variáveis de ambiente
+
+Crie um arquivo `.env.local` na raiz do projeto frontend:
+
+```env
+# Endereço do contrato BurnoutToken deployado
+NEXT_PUBLIC_TOKEN_ADDRESS=0x...
+
+# WalletConnect Project ID (opcional)
+# Obtenha em: https://cloud.walletconnect.com
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=...
+```
+
+### 3. Executar em desenvolvimento
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A aplicação estará disponível em `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Como usar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Conectar Wallet**: Clique no botão "Connect Wallet" no canto superior direito
+2. **Trocar de Rede**: Se necessário, a aplicação pedirá para trocar para a rede Sepolia
+3. **Preencher Formulário**:
+   - Insira a quantidade de tokens a serem mintados
+   - Insira o endereço do destinatário ou clique em "Use My Address" para auto-fill
+4. **Mint**: Clique em "Mint Tokens" e confirme a transação na sua wallet
+5. **Confirmação**: Após a confirmação, um modal será exibido com os detalhes do mint
 
-## Learn More
+## Tecnologias
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js 16**: Framework React
+- **Wagmi v3**: Biblioteca para interação com Ethereum
+- **Viem**: Biblioteca TypeScript para Ethereum
+- **Tailwind CSS**: Estilização
+- **TypeScript**: Tipagem estática
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estrutura do Projeto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+frontend/
+├── app/
+│   ├── layout.tsx          # Layout principal com providers
+│   ├── page.tsx             # Página principal
+│   └── globals.css          # Estilos globais
+├── components/
+│   ├── WalletConnect.tsx    # Componente de conexão de wallet
+│   ├── MintERC20Form.tsx    # Formulário de mint
+│   ├── MintSuccessModal.tsx # Modal de sucesso
+│   └── Providers.tsx        # Providers do wagmi e react-query
+├── lib/
+│   ├── contracts.ts         # ABI e endereço do contrato
+│   ├── wagmi-config.ts     # Configuração do wagmi
+│   └── utils.ts             # Funções utilitárias
+└── package.json
+```
 
-## Deploy on Vercel
+## Notas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Certifique-se de que o contrato BurnoutToken está deployado antes de usar a aplicação
+- Para desenvolvimento local, use o Hardhat network (chainId: 31337)
+- Para produção/testnet, use Sepolia (chainId: 11155111)
