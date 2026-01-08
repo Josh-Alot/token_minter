@@ -12,7 +12,7 @@ interface Point3D {
 
 export function AnimatedGlobe() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
   const pointsRef = useRef<Point3D[]>([]);
   const linesRef = useRef<HTMLDivElement[]>([]);
 
