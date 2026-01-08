@@ -20,7 +20,7 @@ async function main() {
 
     console.log("BurnoutToken deployed to the address:", token.address);
     console.log("Token name:", await token.read.name());
-    console.log("Token symbol", await token.read.symbol());
+    console.log("Token symbol:", await token.read.symbol());
 }
 
 main()
