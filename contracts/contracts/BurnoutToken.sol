@@ -103,4 +103,9 @@ contract BurnoutToken is ERC20 {
         emit ContractEvent("TOKENS_APPROVED", owner, spender, value, block.timestamp);
     }
 
+    /** TOKEN BURNING **/
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
+    }
+
 }

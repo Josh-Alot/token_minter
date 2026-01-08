@@ -3,9 +3,10 @@ import { sepolia, hardhat } from 'wagmi/chains';
 import { injected, metaMask, walletConnect } from 'wagmi/connectors';
 
 // Configuração dos connectors
+// MetaMask primeiro (se disponível), depois injected para outras wallets
 const connectors = [
-  injected(),
   metaMask(),
+  injected(),
   ...(process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
     ? [
         walletConnect({

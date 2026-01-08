@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useWriteContract, useWaitForTransactionReceipt, useConnection } from 'wagmi';
+import { useQueryClient } from '@tanstack/react-query';
 import { parseEther } from 'viem';
 import { BURNOUT_TOKEN_ABI, BURNOUT_TOKEN_ADDRESS } from '@/lib/contracts';
 import { formatAddress } from '@/lib/utils';
 import { MintSuccessModal } from './MintSuccessModal';
 
 export function MintERC20Form() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useConnection();
   const [recipientAddress, setRecipientAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +18,7 @@ export function MintERC20Form() {
     recipient: string;
     txHash?: string;
   } | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     writeContract,
@@ -24,6 +26,13 @@ export function MintERC20Form() {
     isPending,
     error,
   } = useWriteContract();
+
+  // Evitar erro de hidratação: só renderizar o conteúdo dependente da carteira após o mount no cliente
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt({
@@ -39,8 +48,13 @@ export function MintERC20Form() {
         recipient: recipientAddress,
         txHash: hash,
       });
+      
+      // Invalidar todas as queries relacionadas ao contrato para atualizar os dados
+      queryClient.invalidateQueries({
+        queryKey: [{ entity: 'readContract', address: BURNOUT_TOKEN_ADDRESS }],
+      });
     }
-  }, [isConfirmed, hash, showModal, amount, recipientAddress]);
+  }, [isConfirmed, hash, showModal, amount, recipientAddress, queryClient]);
 
   const handleAutoFill = () => {
     if (address) {
@@ -74,30 +88,53 @@ export function MintERC20Form() {
     }
   };
 
+  // Durante SSR / antes da hidratação, renderizar um placeholder estático
+  if (!mounted) {
+    return (
+      <div className="glass rounded-2xl p-8 border border-white/20 shadow-xl">
+        <p className="text-center text-zinc-400 animate-pulse">
+          Loading mint form...
+        </p>
+      </div>
+    );
+  }
+
   if (!isConnected) {
     return (
-      <div className="p-6 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-300 dark:border-zinc-700">
-        <p className="text-center text-zinc-600 dark:text-zinc-400">
-          Please connect your wallet to mint tokens
-        </p>
+      <div className="glass rounded-2xl p-8 border border-white/20 shadow-xl">
+        <div className="text-center space-y-3">
+          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center border border-white/20">
+            <svg className="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <p className="text-zinc-400 font-medium">
+            Please connect your wallet to mint tokens
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <>
-      <form onSubmit={handleMint} className="space-y-6 p-6 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-sm">
-        <div>
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-            Mint ERC-20 Tokens
-          </h2>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Mint tokens to any address on the network
-          </p>
+      <form onSubmit={handleMint} className="glass rounded-2xl p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 space-y-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xl font-bold shadow-lg glow-blue">
+            🪙
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              Mint Tokens
+            </h2>
+            <p className="text-sm text-zinc-400">
+              Create new tokens on the network
+            </p>
+          </div>
         </div>
 
         <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+          <label htmlFor="amount" className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
             Amount
           </label>
           <input
@@ -109,12 +146,12 @@ export function MintERC20Form() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             required
-            className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
           />
         </div>
 
         <div>
-          <label htmlFor="recipient" className="block text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+          <label htmlFor="recipient" className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
             Recipient Address
           </label>
           <div className="flex gap-2">
@@ -125,41 +162,67 @@ export function MintERC20Form() {
               onChange={(e) => setRecipientAddress(e.target.value)}
               placeholder="0x..."
               required
-              className="flex-1 px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-mono text-sm"
             />
             <button
               type="button"
               onClick={handleAutoFill}
-              className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors whitespace-nowrap"
+              className="px-4 py-3 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 transition-all whitespace-nowrap"
             >
-              Use My Address
+              My Address
             </button>
           </div>
           {address && (
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
-              Your address: {formatAddress(address)}
+            <p className="mt-2 text-xs text-zinc-500 font-mono">
+              {formatAddress(address)}
             </p>
           )}
         </div>
 
         {error && (
-          <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-            <p className="text-sm text-red-800 dark:text-red-200">
-              Error: {error.message}
-            </p>
+          <div className="p-4 glass-dark rounded-xl border border-red-500/30 break-words">
+            <div className="flex items-center gap-2 mb-1">
+              <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-sm font-semibold text-red-200">Error</p>
+            </div>
+            <p className="text-sm text-red-300">{error.message}</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={isPending || isConfirming || !amount || !recipientAddress}
-          className="w-full px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full px-6 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] glow-blue relative overflow-hidden group"
         >
-          {isPending
-            ? 'Confirm in wallet...'
-            : isConfirming
-            ? 'Minting...'
-            : 'Mint Tokens'}
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            {isPending ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Confirm in wallet...
+              </>
+            ) : isConfirming ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Minting...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Mint Tokens
+              </>
+            )}
+          </span>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
         </button>
       </form>
 
@@ -170,6 +233,7 @@ export function MintERC20Form() {
           txHash={mintData.txHash}
           onClose={() => {
             setShowModal(false);
+            setMintData(null);
             setAmount('');
             setRecipientAddress('');
           }}

@@ -469,6 +469,182 @@ describe("BurnoutToken", async function () {
     });
   });
 
+  describe("Burning", async function () {
+    it("Should burn tokens from sender's balance", async function () {
+      const connection = await network.connect({
+        network: "hardhatMainnet",
+        chainType: "l1",
+      });
+      const viem = (connection as unknown as { viem: any }).viem;
+      const [deployer] = await viem.getWalletClients();
+      const token = await viem.deployContract("BurnoutToken", [
+        TOKEN_NAME,
+        TOKEN_SYMBOL,
+        INITIAL_SUPPLY,
+      ]);
+
+      const burnAmount = parseEther("100");
+      const initialBalance = await token.read.balanceOf([deployer.account.address]);
+      
+      await token.write.burn([burnAmount]);
+
+      assert.equal(
+        await token.read.balanceOf([deployer.account.address]),
+        initialBalance - burnAmount
+      );
+      assert.equal(
+        await token.read.totalSupply(),
+        INITIAL_SUPPLY - burnAmount
+      );
+    });
+
+    it("Should emit TokensBurned event when burning", async function () {
+      const connection = await network.connect({
+        network: "hardhatMainnet",
+        chainType: "l1",
+      });
+      const viem = (connection as unknown as { viem: any }).viem;
+      const publicClient = await viem.getPublicClient();
+      const [deployer] = await viem.getWalletClients();
+      const token = await viem.deployContract("BurnoutToken", [
+        TOKEN_NAME,
+        TOKEN_SYMBOL,
+        INITIAL_SUPPLY,
+      ]);
+
+      const burnAmount = parseEther("100");
+      const expectedTotalSupply = INITIAL_SUPPLY - burnAmount;
+      const deploymentBlockNumber = await publicClient.getBlockNumber();
+
+      await token.write.burn([burnAmount]);
+
+      const events = await publicClient.getContractEvents({
+        address: token.address,
+        abi: token.abi,
+        eventName: "TokensBurned",
+        fromBlock: deploymentBlockNumber,
+        strict: true,
+      });
+
+      assert.equal(events.length, 1);
+      assert.equal(getAddress(events[0].args.burner as string), getAddress(deployer.account.address));
+      assert.equal(events[0].args.amount, burnAmount);
+      assert.equal(events[0].args.newTotalSupply, expectedTotalSupply);
+    });
+
+    it("Should emit ContractEvent with TOKENS_BURNED when burning", async function () {
+      const connection = await network.connect({
+        network: "hardhatMainnet",
+        chainType: "l1",
+      });
+      const viem = (connection as unknown as { viem: any }).viem;
+      const publicClient = await viem.getPublicClient();
+      const [deployer] = await viem.getWalletClients();
+      const token = await viem.deployContract("BurnoutToken", [
+        TOKEN_NAME,
+        TOKEN_SYMBOL,
+        INITIAL_SUPPLY,
+      ]);
+
+      const burnAmount = parseEther("100");
+      const deploymentBlockNumber = await publicClient.getBlockNumber();
+
+      await token.write.burn([burnAmount]);
+
+      const events = await publicClient.getContractEvents({
+        address: token.address,
+        abi: token.abi,
+        eventName: "ContractEvent",
+        fromBlock: deploymentBlockNumber,
+        strict: true,
+      });
+
+      const burnEvent = events.find(
+        (e: any) => e.args.eventType === "TOKENS_BURNED"
+      );
+      assert(burnEvent !== undefined, "TOKENS_BURNED event not found");
+      assert.equal(getAddress(burnEvent.args.actor as string), getAddress(deployer.account.address));
+      assert.equal(getAddress(burnEvent.args.target as string), "0x0000000000000000000000000000000000000000");
+      assert.equal(burnEvent.args.value, burnAmount);
+    });
+
+    it("Should revert burn if insufficient balance", async function () {
+      const connection = await network.connect({
+        network: "hardhatMainnet",
+        chainType: "l1",
+      });
+      const viem = (connection as unknown as { viem: any }).viem;
+      const [deployer] = await viem.getWalletClients();
+      const token = await viem.deployContract("BurnoutToken", [
+        TOKEN_NAME,
+        TOKEN_SYMBOL,
+        INITIAL_SUPPLY,
+      ]);
+
+      const excessiveAmount = INITIAL_SUPPLY + parseEther("1");
+
+      await assert.rejects(
+        token.write.burn([excessiveAmount]),
+        /ERC20InsufficientBalance/
+      );
+    });
+
+    it("Should allow multiple burns", async function () {
+      const connection = await network.connect({
+        network: "hardhatMainnet",
+        chainType: "l1",
+      });
+      const viem = (connection as unknown as { viem: any }).viem;
+      const [deployer] = await viem.getWalletClients();
+      const token = await viem.deployContract("BurnoutToken", [
+        TOKEN_NAME,
+        TOKEN_SYMBOL,
+        INITIAL_SUPPLY,
+      ]);
+
+      const burnAmount1 = parseEther("50");
+      const burnAmount2 = parseEther("75");
+      const initialBalance = await token.read.balanceOf([deployer.account.address]);
+
+      await token.write.burn([burnAmount1]);
+      await token.write.burn([burnAmount2]);
+
+      assert.equal(
+        await token.read.balanceOf([deployer.account.address]),
+        initialBalance - burnAmount1 - burnAmount2
+      );
+      assert.equal(
+        await token.read.totalSupply(),
+        INITIAL_SUPPLY - burnAmount1 - burnAmount2
+      );
+    });
+
+    it("Should allow burning all tokens", async function () {
+      const connection = await network.connect({
+        network: "hardhatMainnet",
+        chainType: "l1",
+      });
+      const viem = (connection as unknown as { viem: any }).viem;
+      const [deployer] = await viem.getWalletClients();
+      const token = await viem.deployContract("BurnoutToken", [
+        TOKEN_NAME,
+        TOKEN_SYMBOL,
+        INITIAL_SUPPLY,
+      ]);
+
+      await token.write.burn([INITIAL_SUPPLY]);
+
+      assert.equal(
+        await token.read.balanceOf([deployer.account.address]),
+        0n
+      );
+      assert.equal(
+        await token.read.totalSupply(),
+        0n
+      );
+    });
+  });
+
   describe("ERC20 Standard Compliance", async function () {
     it("Should have correct decimals (18)", async function () {
       const connection = await network.connect({
@@ -500,11 +676,13 @@ describe("BurnoutToken", async function () {
 
       const mintAmount = parseEther("500");
       const transferAmount = parseEther("200");
+      const burnAmount = parseEther("100");
 
       await token.write.mint([recipient.account.address, mintAmount]);
       await token.write.transfer([recipient.account.address, transferAmount]);
+      await token.write.burn([burnAmount]);
 
-      const expectedSupply = INITIAL_SUPPLY + mintAmount;
+      const expectedSupply = INITIAL_SUPPLY + mintAmount - burnAmount;
       assert.equal(await token.read.totalSupply(), expectedSupply);
     });
   });
