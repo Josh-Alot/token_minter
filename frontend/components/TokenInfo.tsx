@@ -93,7 +93,11 @@ export function TokenInfo() {
               {formatAddress(BURNOUT_TOKEN_ADDRESS)}
             </p>
             <button
-              onClick={() => navigator.clipboard.writeText(BURNOUT_TOKEN_ADDRESS)}
+              onClick={() => {
+                if (BURNOUT_TOKEN_ADDRESS) {
+                  navigator.clipboard.writeText(BURNOUT_TOKEN_ADDRESS);
+                }
+              }}
               className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
               title="Copy address"
             >
