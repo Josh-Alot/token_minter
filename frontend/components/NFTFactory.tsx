@@ -212,7 +212,7 @@ export const NFTFactory: React.FC = () => {
           <div className="p-4 rounded-2xl bg-red-500/20 border border-red-500/50 text-red-300 text-sm">
             <p className="font-bold mb-1">Error creating collection</p>
             <p>{error.message || error.toString() || 'Failed to create collection'}</p>
-            {error.cause && (
+            {Boolean(error.cause) && (
               <p className="mt-2 text-xs opacity-75">{String(error.cause)}</p>
             )}
           </div>
