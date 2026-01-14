@@ -103,7 +103,7 @@ export function MintERC20Form() {
     return (
       <div className="glass rounded-2xl p-8 border border-white/20 shadow-xl">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center border border-white/20">
+          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center border border-white/20">
             <svg className="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -118,9 +118,9 @@ export function MintERC20Form() {
 
   return (
     <>
-      <form onSubmit={handleMint} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6">
+      <form onSubmit={handleMint} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6 overflow-hidden">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-blue">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-red-600 to-orange-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-orange">
             🪙
           </div>
           <div>
@@ -146,15 +146,15 @@ export function MintERC20Form() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             required
-            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 focus:bg-white/8 transition-all font-medium"
+            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 focus:bg-white/8 transition-all font-medium"
           />
         </div>
 
-        <div>
+        <div className="overflow-hidden">
           <label htmlFor="recipient" className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
             Recipient Address
           </label>
-          <div className="flex gap-3">
+          <div className="flex gap-3 min-w-0">
             <input
               id="recipient"
               type="text"
@@ -162,39 +162,39 @@ export function MintERC20Form() {
               onChange={(e) => setRecipientAddress(e.target.value)}
               placeholder="0x..."
               required
-              className="flex-1 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 focus:bg-white/8 transition-all font-mono text-sm"
+              className="flex-1 min-w-0 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 focus:bg-white/8 transition-all font-mono text-sm overflow-hidden"
             />
             <button
               type="button"
               onClick={handleAutoFill}
-              className="px-5 py-4 text-sm font-bold text-white bg-white/10 hover:bg-white/20 rounded-2xl border border-white/20 transition-all whitespace-nowrap hover:scale-105"
+              className="px-4 sm:px-5 py-4 text-xs sm:text-sm font-bold text-white bg-white/10 hover:bg-white/20 rounded-2xl border border-white/20 transition-all whitespace-nowrap hover:scale-105 flex-shrink-0"
             >
               My Address
             </button>
           </div>
           {address && (
-            <p className="mt-3 text-xs text-zinc-500 font-mono">
+            <p className="mt-3 text-xs text-zinc-500 font-mono break-all overflow-wrap-anywhere">
               {formatAddress(address)}
             </p>
           )}
         </div>
 
         {error && (
-          <div className="p-4 glass-dark rounded-xl border border-red-500/30 break-words">
+          <div className="p-4 glass-dark rounded-xl border border-red-500/30 break-words overflow-hidden">
             <div className="flex items-center gap-2 mb-1">
-              <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <p className="text-sm font-semibold text-red-200">Error</p>
             </div>
-            <p className="text-sm text-red-300">{error.message}</p>
+            <p className="text-sm text-red-300 break-words overflow-wrap-anywhere">{error.message}</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={isPending || isConfirming || !amount || !recipientAddress}
-          className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 rounded-2xl hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-blue relative overflow-hidden group"
+          className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 rounded-2xl hover:from-orange-700 hover:via-red-700 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-orange relative overflow-hidden group"
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
             {isPending ? (

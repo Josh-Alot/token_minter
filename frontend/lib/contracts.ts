@@ -236,4 +236,150 @@ export const BURNOUT_TOKEN_ABI = [
 // Endereço do contrato - será configurado após deploy
 // Para desenvolvimento local, use o endereço do contrato deployado
 export const BURNOUT_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}` | undefined;
+
+// ABI do contrato BurnoutNFTFactory
+export const BURNOUT_NFT_FACTORY_ABI = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "creator",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "collectionAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "collectionType",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "symbol",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
+    ],
+    name: "CollectionCreated",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "collectionsByUser",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "symbol",
+        type: "string",
+      },
+    ],
+    name: "createDynamicCollection",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "symbol",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "baseTokenURI",
+        type: "string",
+      },
+    ],
+    name: "createStandardCollection",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "getCollectionsByUser",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
+
+// Endereço do contrato Factory - será configurado após deploy
+export const BURNOUT_NFT_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_NFT_FACTORY_ADDRESS as `0x${string}` | undefined;
   

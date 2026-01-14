@@ -96,7 +96,7 @@ export function ApproveForm() {
     return (
       <div className="glass rounded-2xl p-8 border border-white/20 shadow-xl">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center border border-white/20">
+          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-orange-500/20 to-yellow-500/20 flex items-center justify-center border border-white/20">
             <svg className="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -112,7 +112,7 @@ export function ApproveForm() {
   return (
     <form onSubmit={handleApprove} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-purple">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-yellow-500 to-orange-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-orange">
           ✓
         </div>
         <div>
@@ -141,7 +141,7 @@ export function ApproveForm() {
           }}
           placeholder="0x..."
           required
-          className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/8 transition-all font-mono text-sm"
+          className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 focus:bg-white/8 transition-all font-mono text-sm"
         />
       </div>
 
@@ -158,13 +158,13 @@ export function ApproveForm() {
           onChange={(e) => setAmount(e.target.value)}
           placeholder="0.0"
           required
-          className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/8 transition-all font-medium"
+          className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 focus:bg-white/8 transition-all font-medium"
         />
       </div>
 
       {spenderAddress && allowance !== undefined && (
-        <div className="p-4 glass-dark rounded-xl border border-purple-500/30">
-          <p className="text-sm font-semibold text-purple-200">
+        <div className="p-4 glass-dark rounded-xl border border-orange-500/30">
+          <p className="text-sm font-semibold text-orange-200">
             Current allowance: <span className="text-white">{formatEther(allowance)}</span> tokens
           </p>
         </div>
@@ -198,7 +198,7 @@ export function ApproveForm() {
         <button
         type="submit"
         disabled={isPending || isConfirming || !amount || !spenderAddress}
-        className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 rounded-2xl hover:from-purple-700 hover:via-pink-700 hover:to-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-purple relative overflow-hidden group"
+        className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-orange-600 via-yellow-600 to-orange-600 rounded-2xl hover:from-orange-700 hover:via-yellow-700 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-orange relative overflow-hidden group"
       >
         <span className="relative z-10 flex items-center justify-center gap-2">
           {isPending ? (

@@ -2,155 +2,183 @@
 
 import { useEffect, useRef } from 'react';
 
-interface Point3D {
+interface FireParticle {
   x: number;
   y: number;
-  z: number;
+  vx: number;
+  vy: number;
+  size: number;
+  life: number;
+  maxLife: number;
   element: HTMLDivElement;
-  projected: { x: number; y: number; z: number; scale: number };
+  color: string;
 }
 
 export function AnimatedGlobe() {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
-  const pointsRef = useRef<Point3D[]>([]);
-  const linesRef = useRef<HTMLDivElement[]>([]);
+  const particlesRef = useRef<FireParticle[]>([]);
+  const heatWavesRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
-    const numPoints = 60;
-    const radius = 250;
-    const connectionDistance = radius * 0.85;
+    const numParticles = 80;
+    const numHeatWaves = 3;
 
-    // Criar pontos distribuídos uniformemente na esfera
-    const points: Point3D[] = [];
-    for (let i = 0; i < numPoints; i++) {
-      const point = document.createElement('div');
-      point.className = 'globe-point';
+    // Cores quentes para as partículas
+    const fireColors = [
+      'rgba(251, 146, 60, 1)',   // orange-400
+      'rgba(249, 115, 22, 1)',   // orange-500
+      'rgba(220, 38, 38, 1)',     // red-600
+      'rgba(234, 88, 12, 1)',    // orange-600
+      'rgba(251, 191, 36, 1)',   // yellow-400
+    ];
+
+    // Criar partículas de fogo
+    const particles: FireParticle[] = [];
+    for (let i = 0; i < numParticles; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'fire-particle';
       
-      // Distribuição uniforme usando Fibonacci sphere
-      const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-      const y = 1 - (i / (numPoints - 1)) * 2;
-      const radius_at_y = Math.sqrt(1 - y * y);
-      const theta = goldenAngle * i;
-      
-      const x = Math.cos(theta) * radius_at_y;
-      const z = Math.sin(theta) * radius_at_y;
-      
-      const point3D: Point3D = {
-        x: x * radius,
-        y: y * radius,
-        z: z * radius,
-        element: point,
-        projected: { x: 0, y: 0, z: 0, scale: 1 }
+      const size = Math.random() * 4 + 2;
+      const x = Math.random() * window.innerWidth;
+      const y = window.innerHeight + Math.random() * 200;
+      const vx = (Math.random() - 0.5) * 0.5;
+      const vy = -(Math.random() * 2 + 1);
+      const maxLife = Math.random() * 200 + 150;
+      const color = fireColors[Math.floor(Math.random() * fireColors.length)];
+
+      const fireParticle: FireParticle = {
+        x,
+        y,
+        vx,
+        vy,
+        size,
+        life: 0,
+        maxLife,
+        element: particle,
+        color,
       };
+
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      particle.style.background = `radial-gradient(circle, ${color} 0%, ${color}00 100%)`;
+      particle.style.borderRadius = '50%';
+      particle.style.position = 'absolute';
+      particle.style.boxShadow = `0 0 ${size * 2}px ${color}, 0 0 ${size * 4}px ${color}80`;
+      particle.style.transition = 'opacity 0.1s ease';
+
+      particles.push(fireParticle);
+      container.appendChild(particle);
+    }
+
+    particlesRef.current = particles;
+
+    // Criar ondas de calor
+    const heatWaves: HTMLDivElement[] = [];
+    for (let i = 0; i < numHeatWaves; i++) {
+      const wave = document.createElement('div');
+      wave.className = 'heat-wave';
+      wave.style.position = 'absolute';
+      wave.style.width = '100%';
+      wave.style.height = '100%';
+      wave.style.background = `radial-gradient(ellipse at ${50 + i * 20}% ${30 + i * 15}%, rgba(249, 115, 22, ${0.1 + i * 0.05}) 0%, transparent 70%)`;
+      wave.style.pointerEvents = 'none';
+      wave.style.animation = `heatWave ${3 + i * 2}s ease-in-out infinite`;
+      wave.style.animationDelay = `${i * 0.5}s`;
       
-      points.push(point3D);
-      container.appendChild(point);
+      heatWaves.push(wave);
+      container.appendChild(wave);
     }
 
-    pointsRef.current = points;
+    heatWavesRef.current = heatWaves;
 
-    let angleX = 0;
-    let angleY = 0;
-    const rotationSpeedX = 0.0015;
-    const rotationSpeedY = 0.001;
-
-    function rotatePoint(point: Point3D, angleX: number, angleY: number): { x: number; y: number; z: number } {
-      // Rotação em X
-      let x1 = point.x;
-      let y1 = point.y * Math.cos(angleX) - point.z * Math.sin(angleX);
-      let z1 = point.y * Math.sin(angleX) + point.z * Math.cos(angleX);
-
-      // Rotação em Y
-      let x2 = x1 * Math.cos(angleY) + z1 * Math.sin(angleY);
-      let y2 = y1;
-      let z2 = -x1 * Math.sin(angleY) + z1 * Math.cos(angleY);
-
-      return { x: x2, y: y2, z: z2 };
-    }
-
-    function projectPoint(x: number, y: number, z: number, distance: number = 600): { x: number; y: number; z: number; scale: number } {
-      const scale = distance / (distance + z);
-      return {
-        x: x * scale,
-        y: y * scale,
-        z: z,
-        scale: Math.max(0.4, scale)
-      };
-    }
-
-    function animate() {
-      angleX += rotationSpeedX;
-      angleY += rotationSpeedY;
-
-      // Limpar linhas anteriores
-      linesRef.current.forEach(line => line.remove());
-      linesRef.current = [];
-
-      // Projetar todos os pontos
-      points.forEach(point => {
-        const rotated = rotatePoint(point, angleX, angleY);
-        point.projected = projectPoint(rotated.x, rotated.y, rotated.z);
-        
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        
-        point.element.style.transform = `translate(${centerX + point.projected.x}px, ${centerY + point.projected.y}px) scale(${point.projected.scale})`;
-        point.element.style.opacity = `${point.projected.scale}`;
-      });
-
-      // Conectar pontos próximos
-      for (let i = 0; i < points.length; i++) {
-        for (let j = i + 1; j < points.length; j++) {
-          const p1 = points[i];
-          const p2 = points[j];
-          
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const dz = p1.z - p2.z;
-          const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-          if (distance < connectionDistance) {
-            const line = document.createElement('div');
-            line.className = 'globe-line';
-            
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            
-            const x1 = centerX + p1.projected.x;
-            const y1 = centerY + p1.projected.y;
-            const x2 = centerX + p2.projected.x;
-            const y2 = centerY + p2.projected.y;
-            
-            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-            const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
-
-            line.style.width = `${length}px`;
-            line.style.left = `${x1}px`;
-            line.style.top = `${y1}px`;
-            line.style.transform = `rotate(${angle}deg)`;
-            line.style.opacity = `${Math.max(0.15, (1 - distance / connectionDistance) * 0.4)}`;
-
-            container.appendChild(line);
-            linesRef.current.push(line);
-          }
+    // Adicionar keyframes para ondas de calor via CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes heatWave {
+        0%, 100% {
+          opacity: 0.3;
+          transform: scale(1) translateY(0);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(1.1) translateY(-20px);
         }
       }
+    `;
+    document.head.appendChild(style);
+
+    let time = 0;
+
+    function animate() {
+      time += 0.016; // ~60fps
+
+      // Atualizar partículas
+      particles.forEach((particle, index) => {
+        // Movimento orgânico com turbulência
+        particle.vx += (Math.random() - 0.5) * 0.02;
+        particle.vy -= 0.02 + Math.random() * 0.01;
+        
+        // Aplicar movimento
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        
+        // Turbulência baseada em seno para movimento de chama
+        particle.x += Math.sin(time * 2 + index) * 0.3;
+        
+        // Atualizar vida
+        particle.life += 1;
+        
+        // Resetar partícula quando ela morre ou sai da tela
+        if (particle.life >= particle.maxLife || particle.y < -50 || 
+            particle.x < -50 || particle.x > window.innerWidth + 50) {
+          particle.x = Math.random() * window.innerWidth;
+          particle.y = window.innerHeight + Math.random() * 100;
+          particle.vx = (Math.random() - 0.5) * 0.5;
+          particle.vy = -(Math.random() * 2 + 1);
+          particle.life = 0;
+          particle.maxLife = Math.random() * 200 + 150;
+        }
+
+        // Calcular opacidade baseada na vida
+        const lifeRatio = particle.life / particle.maxLife;
+        const opacity = 1 - lifeRatio;
+        const scale = 0.5 + (1 - lifeRatio) * 0.5;
+
+        // Aplicar transformações
+        particle.element.style.transform = `translate(${particle.x}px, ${particle.y}px) scale(${scale})`;
+        particle.element.style.opacity = `${opacity}`;
+        
+        // Mudar cor baseada na vida (mais quente no início, mais frio no final)
+        let currentColor = particle.color;
+        if (lifeRatio > 0.7) {
+          currentColor = fireColors[Math.floor(Math.random() * 3)]; // Cores mais quentes
+        } else if (lifeRatio > 0.4) {
+          currentColor = fireColors[Math.floor(Math.random() * 4) + 1]; // Cores médias
+        } else {
+          currentColor = fireColors[fireColors.length - 1]; // Amarelo no final
+        }
+        
+        particle.element.style.background = `radial-gradient(circle, ${currentColor} 0%, ${currentColor}00 100%)`;
+        particle.element.style.boxShadow = `0 0 ${particle.size * 2}px ${currentColor}, 0 0 ${particle.size * 4}px ${currentColor}80`;
+      });
 
       animationFrameRef.current = requestAnimationFrame(animate);
     }
 
     animate();
 
+    // Cleanup
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      points.forEach(point => point.element.remove());
-      linesRef.current.forEach(line => line.remove());
+      particles.forEach(particle => particle.element.remove());
+      heatWaves.forEach(wave => wave.remove());
+      style.remove();
     };
   }, []);
 

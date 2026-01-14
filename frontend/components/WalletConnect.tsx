@@ -146,7 +146,7 @@ export function WalletConnect() {
       <div className="flex flex-col items-end gap-2">
         <button
           disabled
-          className="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl opacity-50 cursor-not-allowed shadow-lg"
+          className="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl opacity-50 cursor-not-allowed shadow-lg"
         >
           Connect Wallet
         </button>
@@ -195,7 +195,7 @@ export function WalletConnect() {
       <button
         onClick={handleConnect}
         disabled={isPending || connectors.length === 0}
-        className="px-8 py-3 text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 rounded-xl hover:from-purple-700 hover:via-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-105 glow-blue relative overflow-hidden group"
+        className="px-8 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 rounded-xl hover:from-orange-700 hover:via-red-700 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-105 glow-orange relative overflow-hidden group"
       >
         <span className="relative z-10 flex items-center gap-2">
           {isPending ? (

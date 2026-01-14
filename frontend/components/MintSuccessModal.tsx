@@ -45,7 +45,9 @@ export function MintSuccessModal({
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     onClose();
   };
 
@@ -58,8 +60,10 @@ export function MintSuccessModal({
       aria-labelledby="modal-title"
     >
       <div
-        className="glass rounded-2xl shadow-2xl max-w-md w-full mx-4 p-8 border border-white/20"
-        onClick={(e) => e.stopPropagation()}
+        className="glass rounded-2xl shadow-2xl max-w-md w-full mx-4 p-8 border border-white/20 relative z-10"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -73,34 +77,34 @@ export function MintSuccessModal({
           <button
             onClick={handleClose}
             type="button"
-            className="text-zinc-400 hover:text-white transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10"
+            className="text-zinc-400 hover:text-white transition-colors text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 cursor-pointer"
             aria-label="Close modal"
           >
             ✕
           </button>
         </div>
 
-        <div className="space-y-5">
-          <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30">
+        <div className="space-y-5 overflow-y-auto max-h-[calc(100vh-200px)] overflow-x-hidden">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 overflow-hidden">
             <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
               Amount Minted
             </p>
-            <p className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-white break-words">
               {amount} <span className="text-lg text-zinc-300">tokens</span>
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
             <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
               Recipient Address
             </p>
-            <p className="text-sm font-mono text-white break-all">
+            <p className="text-sm font-mono text-white break-all overflow-wrap-anywhere">
               {formatAddress(recipient)}
             </p>
           </div>
 
           {txHash && (
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
                 Transaction Hash
               </p>
@@ -108,10 +112,11 @@ export function MintSuccessModal({
                 href={`https://sepolia.etherscan.io/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-mono text-blue-400 hover:text-blue-300 hover:underline break-all flex items-center gap-2 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+                className="text-sm font-mono text-blue-400 hover:text-blue-300 hover:underline break-all overflow-wrap-anywhere flex items-start gap-2 transition-colors"
               >
-                {formatAddress(txHash)}
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="flex-1 min-w-0">{formatAddress(txHash)}</span>
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
@@ -121,7 +126,7 @@ export function MintSuccessModal({
           <button
             onClick={handleClose}
             type="button"
-            className="w-full px-6 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] glow-blue"
+            className="w-full px-6 py-4 text-base font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] glow-orange cursor-pointer"
           >
             Close
           </button>

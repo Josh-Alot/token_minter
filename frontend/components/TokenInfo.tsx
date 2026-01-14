@@ -74,7 +74,7 @@ export function TokenInfo() {
   return (
     <div className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15">
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-purple">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-red-600 to-orange-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-orange">
           ℹ️
         </div>
         <h2 className="text-3xl font-black text-white tracking-tight">
@@ -110,7 +110,7 @@ export function TokenInfo() {
 
         {/* Name and Symbol */}
         <div className="grid grid-cols-2 gap-4 sm:gap-6">
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/25 to-blue-500/25 border border-purple-500/40 hover:border-purple-500/60 transition-all">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-orange-500/25 to-red-500/25 border border-orange-500/40 hover:border-orange-500/60 transition-all">
             <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
               Name
             </p>
@@ -123,7 +123,7 @@ export function TokenInfo() {
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-gradient-to-br from-cyan-500/25 to-blue-500/25 border border-cyan-500/40 hover:border-cyan-500/60 transition-all">
+          <div className="p-5 rounded-2xl bg-gradient-to-br from-red-500/25 to-orange-500/25 border border-red-500/40 hover:border-red-500/60 transition-all">
             <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
               Symbol
             </p>
@@ -138,11 +138,11 @@ export function TokenInfo() {
         </div>
 
         {/* Total Supply */}
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-500/25 via-purple-500/25 to-pink-500/25 border border-blue-500/40 hover:border-blue-500/60 transition-all">
+        <div className="p-6 rounded-2xl bg-gradient-to-r from-orange-500/25 via-red-500/25 to-yellow-500/25 border border-orange-500/40 hover:border-orange-500/60 transition-all">
           <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
             Total Supply
           </p>
-          <p className="text-3xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <p className="text-3xl font-black bg-gradient-to-r from-orange-400 via-red-400 to-yellow-400 bg-clip-text text-transparent">
             {totalSupply ? (
               <>
                 {formatEther(totalSupply)} <span className="text-white text-xl">{symbol || ''}</span>

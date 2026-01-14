@@ -130,7 +130,7 @@ export function BurnForm() {
   }
 
   return (
-    <form onSubmit={handleBurn} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6">
+    <form onSubmit={handleBurn} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6 overflow-hidden">
       <div className="flex items-center gap-4 mb-6">
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 via-orange-500 to-amber-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-red">
           🔥
@@ -146,18 +146,18 @@ export function BurnForm() {
       </div>
 
       {balance !== undefined && (
-        <div className="p-4 glass-dark rounded-xl border border-blue-500/30">
-          <p className="text-sm font-semibold text-blue-200">
+        <div className="p-4 glass-dark rounded-xl border border-blue-500/30 overflow-hidden">
+          <p className="text-sm font-semibold text-blue-200 break-words">
             Your balance: <span className="text-white text-lg">{formatEther(balance)}</span> tokens
           </p>
         </div>
       )}
 
-      <div>
+      <div className="overflow-hidden">
         <label htmlFor="burn-amount" className="block text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
           Amount to Burn
         </label>
-        <div className="flex gap-3">
+        <div className="flex gap-3 min-w-0">
           <input
             id="burn-amount"
             type="number"
@@ -167,34 +167,34 @@ export function BurnForm() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             required
-            className="flex-1 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 focus:bg-white/8 transition-all font-medium"
+            className="flex-1 min-w-0 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 focus:bg-white/8 transition-all font-medium overflow-hidden"
           />
           {balance !== undefined && (
             <button
               type="button"
               onClick={handleMaxBurn}
-              className="px-5 py-4 text-sm font-bold text-white bg-red-500/20 hover:bg-red-500/30 rounded-2xl border border-red-500/30 transition-all whitespace-nowrap hover:scale-105"
+              className="px-4 sm:px-5 py-4 text-xs sm:text-sm font-bold text-white bg-red-500/20 hover:bg-red-500/30 rounded-2xl border border-red-500/30 transition-all whitespace-nowrap hover:scale-105 flex-shrink-0"
             >
               Max
             </button>
           )}
         </div>
         {address && (
-          <p className="mt-3 text-xs text-zinc-500 font-mono">
+          <p className="mt-3 text-xs text-zinc-500 font-mono break-all overflow-wrap-anywhere">
             {formatAddress(address)}
           </p>
         )}
       </div>
 
       {error && (
-        <div className="p-4 glass-dark rounded-xl border border-red-500/30 break-words">
+        <div className="p-4 glass-dark rounded-xl border border-red-500/30 break-words overflow-hidden">
           <div className="flex items-center gap-2 mb-1">
-            <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p className="text-sm font-semibold text-red-200">Error</p>
           </div>
-          <p className="text-sm text-red-300">{error.message}</p>
+          <p className="text-sm text-red-300 break-words overflow-wrap-anywhere">{error.message}</p>
         </div>
       )}
 
