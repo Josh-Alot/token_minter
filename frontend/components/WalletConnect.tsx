@@ -146,7 +146,7 @@ export function WalletConnect() {
       <div className="flex flex-col items-end gap-2">
         <button
           disabled
-          className="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl opacity-50 cursor-not-allowed shadow-lg"
+          className="px-6 py-3 text-sm font-semibold text-white bg-white/10 border border-white/10 rounded-xl opacity-50 cursor-not-allowed"
         >
           Connect Wallet
         </button>
@@ -175,14 +175,14 @@ export function WalletConnect() {
         {chain?.id !== 11155111 && chain?.id !== 31337 && (
           <button
             onClick={handleSwitchChain}
-            className="px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+            className="px-4 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl border border-indigo-500/20"
           >
             Switch Network
           </button>
         )}
         <button
           onClick={() => disconnect()}
-          className="px-4 py-2.5 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+          className="px-4 py-2.5 text-sm font-semibold text-white bg-white/10 hover:bg-white/15 rounded-xl border border-white/10"
         >
           Disconnect
         </button>
@@ -195,9 +195,9 @@ export function WalletConnect() {
       <button
         onClick={handleConnect}
         disabled={isPending || connectors.length === 0}
-        className="px-8 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 rounded-xl hover:from-orange-700 hover:via-red-700 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-105 glow-orange relative overflow-hidden group"
+        className="px-8 py-3 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl border border-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
       >
-        <span className="relative z-10 flex items-center gap-2">
+        <span className="flex items-center gap-2">
           {isPending ? (
             <>
               <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -215,7 +215,6 @@ export function WalletConnect() {
             </>
           )}
         </span>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
       </button>
       {error && (
         <div className="max-w-xs p-4 glass-dark rounded-xl border border-red-500/30 text-xs text-red-200 space-y-2 shadow-lg">

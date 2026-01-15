@@ -67,7 +67,7 @@ export function MintSuccessModal({
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg glow-green">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-200 text-2xl font-bold shadow-lg">
               ✓
             </div>
             <h3 id="modal-title" className="text-2xl font-bold text-white">
@@ -85,7 +85,7 @@ export function MintSuccessModal({
         </div>
 
         <div className="space-y-5 overflow-y-auto max-h-[calc(100vh-200px)] overflow-x-hidden">
-          <div className="p-4 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 overflow-hidden">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 overflow-hidden">
             <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
               Amount Minted
             </p>
@@ -126,7 +126,7 @@ export function MintSuccessModal({
           <button
             onClick={handleClose}
             type="button"
-            className="w-full px-6 py-4 text-base font-semibold text-white bg-gradient-to-r from-orange-600 to-red-600 rounded-xl hover:from-orange-700 hover:to-red-700 transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] glow-orange cursor-pointer"
+            className="w-full px-6 py-4 text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl transition-all shadow-lg border border-indigo-500/20 cursor-pointer"
           >
             Close
           </button>

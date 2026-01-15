@@ -1,12 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f0a0a;
-  --foreground: #ededed;
-  --gradient-primary: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
-  --gradient-secondary: linear-gradient(135deg, #ea580c 0%, #b91c1c 100%);
-  --gradient-accent: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
-  --gradient-dark: linear-gradient(135deg, #1a0f0f 0%, #2d1b1b 100%);
+  /* Neutral palette (dark-first) */
+  --background: #0b1220;
+  --foreground: #e5e7eb;
+  --surface: rgba(15, 23, 42, 0.7);
+  --surface-strong: rgba(15, 23, 42, 0.85);
+  --border: rgba(148, 163, 184, 0.14);
+  --border-strong: rgba(148, 163, 184, 0.22);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-strong: 0 18px 48px rgba(0, 0, 0, 0.45);
+  --focus: rgba(99, 102, 241, 0.35); /* indigo-500 */
+  --scrollbar: rgba(148, 163, 184, 0.35);
+  --scrollbar-hover: rgba(148, 163, 184, 0.55);
 }
 
 @theme inline {
@@ -18,8 +24,17 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #f8f9fa;
-    --foreground: #171717;
+    --background: #f8fafc;
+    --foreground: #0f172a;
+    --surface: rgba(255, 255, 255, 0.75);
+    --surface-strong: rgba(255, 255, 255, 0.9);
+    --border: rgba(15, 23, 42, 0.12);
+    --border-strong: rgba(15, 23, 42, 0.18);
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
+    --shadow-strong: 0 18px 48px rgba(15, 23, 42, 0.14);
+    --focus: rgba(99, 102, 241, 0.25);
+    --scrollbar: rgba(15, 23, 42, 0.18);
+    --scrollbar-hover: rgba(15, 23, 42, 0.30);
   }
 }
 
@@ -36,37 +51,41 @@ body {
   overflow-x: hidden;
 }
 
-/* Animated background - removido, agora usando componente AnimatedGlobe */
+/* Background is handled by `AnimatedGlobe` */
 
-/* Glassmorphism effect - mais pronunciado */
+/* Surfaces (calm glass) */
 .glass {
-  background: rgba(20, 10, 10, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(249, 115, 22, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(220, 38, 38, 0.2);
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .glass-dark {
-  background: rgba(15, 5, 5, 0.5);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(249, 115, 22, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(220, 38, 38, 0.3);
+  background: var(--surface-strong);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
-/* Card hover effect */
 .glass:hover {
-  border-color: rgba(249, 115, 22, 0.3);
-  box-shadow: 0 12px 40px 0 rgba(220, 38, 38, 0.4);
-  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-strong);
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+/* Keep transitions minimal and intentional */
+a,
+button,
+input,
+textarea,
+select,
+.glass,
+.card {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 160ms;
 }
 
 /* Custom scrollbar */
@@ -80,75 +99,58 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(249, 115, 22, 0.5);
+  background: var(--scrollbar);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(249, 115, 22, 0.7);
+  background: var(--scrollbar-hover);
 }
 
-/* Glow effects - tons quentes */
+/* Legacy glow classes (kept, but subdued) */
 .glow-orange {
-  box-shadow: 0 0 30px rgba(249, 115, 22, 0.6), 0 0 60px rgba(249, 115, 22, 0.3);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.18);
 }
 
 .glow-red {
-  box-shadow: 0 0 30px rgba(220, 38, 38, 0.6), 0 0 60px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.18);
 }
 
 .glow-yellow {
-  box-shadow: 0 0 30px rgba(251, 146, 60, 0.6), 0 0 60px rgba(251, 146, 60, 0.3);
+  box-shadow: 0 10px 30px rgba(234, 179, 8, 0.14);
 }
 
 .glow-green {
-  box-shadow: 0 0 30px rgba(34, 197, 94, 0.5), 0 0 60px rgba(34, 197, 94, 0.2);
-}
-
-/* Estilos para partículas de fogo */
-.fire-particle {
-  position: absolute;
-  pointer-events: none;
-  will-change: transform, opacity;
-  filter: blur(0.5px);
-}
-
-.heat-wave {
-  position: absolute;
-  pointer-events: none;
-  will-change: transform, opacity;
-  filter: blur(40px);
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.14);
 }
 
 /* Card styles para dashboard */
 .card {
-  background: rgba(20, 10, 10, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(249, 115, 22, 0.15);
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
   border-radius: 24px;
-  box-shadow: 0 8px 32px 0 rgba(220, 38, 38, 0.2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
 }
 
 .card:hover {
-  border-color: rgba(249, 115, 22, 0.3);
-  box-shadow: 0 16px 48px 0 rgba(220, 38, 38, 0.4);
-  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-strong);
 }
 
 /* Input styles modernos */
 .input-modern {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
   border-radius: 16px;
   transition: all 0.2s ease;
 }
 
 .input-modern:focus {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(249, 115, 22, 0.5);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow: 0 0 0 3px var(--focus);
 }
 
 /* Button styles modernos */
