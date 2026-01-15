@@ -119,10 +119,10 @@ export const NFTFactory: React.FC = () => {
   return (
     <div className="glass rounded-3xl p-8 sm:p-10">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-2xl">
+        <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-lg">
           🎨
         </div>
-        <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
           Create NFT Collection
         </h2>
       </div>
@@ -137,8 +137,8 @@ export const NFTFactory: React.FC = () => {
               onClick={() => setCollectionType('standard')}
               className={`flex-1 py-3 px-4 rounded-2xl font-bold transition-all duration-300 ${
                 collectionType === 'standard'
-                  ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg glow-orange'
-                  : 'glass text-zinc-400 hover:text-white'
+                  ? 'bg-indigo-600 text-white border border-indigo-500/20 shadow-lg'
+                  : 'bg-white/5 border border-white/10 text-zinc-300 hover:text-white hover:bg-white/10'
               }`}
             >
               Standard
@@ -148,8 +148,8 @@ export const NFTFactory: React.FC = () => {
               onClick={() => setCollectionType('dynamic')}
               className={`flex-1 py-3 px-4 rounded-2xl font-bold transition-all duration-300 ${
                 collectionType === 'dynamic'
-                  ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg glow-orange'
-                  : 'glass text-zinc-400 hover:text-white'
+                  ? 'bg-indigo-600 text-white border border-indigo-500/20 shadow-lg'
+                  : 'bg-white/5 border border-white/10 text-zinc-300 hover:text-white hover:bg-white/10'
               }`}
             >
               Dynamic
@@ -168,7 +168,7 @@ export const NFTFactory: React.FC = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 transition-all"
             placeholder="My Awesome Collection"
           />
         </div>
@@ -184,7 +184,7 @@ export const NFTFactory: React.FC = () => {
             value={symbol}
             onChange={(e) => setSymbol(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 transition-all"
             placeholder="MAC"
           />
         </div>
@@ -201,7 +201,7 @@ export const NFTFactory: React.FC = () => {
               value={baseTokenURI}
               onChange={(e) => setBaseTokenURI(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 transition-all"
               placeholder="https://api.example.com/tokens/"
             />
           </div>
@@ -220,8 +220,8 @@ export const NFTFactory: React.FC = () => {
 
         {/* Success Message */}
         {isConfirmed && (
-          <div className="p-4 rounded-2xl bg-green-500/20 border border-green-500/50 text-green-300 text-sm">
-            Collection created successfully!
+          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-200 text-sm">
+            Collection created successfully.
           </div>
         )}
 
@@ -229,7 +229,7 @@ export const NFTFactory: React.FC = () => {
         <button
           type="submit"
           disabled={isPending || isConfirming}
-          className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 text-white font-bold text-lg hover:shadow-lg glow-orange transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-lg shadow-lg border border-indigo-500/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending || isConfirming ? (
             <span className="flex items-center justify-center gap-2">

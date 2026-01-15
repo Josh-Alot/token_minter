@@ -13,6 +13,7 @@ export function MintERC20Form() {
   const [recipientAddress, setRecipientAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [lastShownTxHash, setLastShownTxHash] = useState<`0x${string}` | null>(null);
   const [mintData, setMintData] = useState<{
     amount: string;
     recipient: string;
@@ -41,20 +42,23 @@ export function MintERC20Form() {
 
   // Quando a transação for confirmada, mostrar modal
   useEffect(() => {
-    if (isConfirmed && hash && !showModal) {
+    // Show only once per transaction hash (otherwise closing would reopen it)
+    if (isConfirmed && hash && hash !== lastShownTxHash) {
       setShowModal(true);
+      setLastShownTxHash(hash);
       setMintData({
         amount,
         recipient: recipientAddress,
         txHash: hash,
       });
       
-      // Invalidar todas as queries relacionadas ao contrato para atualizar os dados
       queryClient.invalidateQueries({
-        queryKey: [{ entity: 'readContract', address: BURNOUT_TOKEN_ADDRESS }],
+        predicate: (q) =>
+          Array.isArray(q.queryKey) &&
+          (q.queryKey[0] === 'readContract' || q.queryKey[0] === 'readContracts'),
       });
     }
-  }, [isConfirmed, hash, showModal, amount, recipientAddress, queryClient]);
+  }, [isConfirmed, hash, lastShownTxHash, amount, recipientAddress, queryClient]);
 
   const handleAutoFill = () => {
     if (address) {
@@ -103,7 +107,7 @@ export function MintERC20Form() {
     return (
       <div className="glass rounded-2xl p-8 border border-white/20 shadow-xl">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center border border-white/20">
+          <div className="w-16 h-16 mx-auto rounded-full bg-white/5 flex items-center justify-center border border-white/10">
             <svg className="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -120,7 +124,7 @@ export function MintERC20Form() {
     <>
       <form onSubmit={handleMint} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6 overflow-hidden">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 via-red-600 to-orange-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-orange">
+          <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
             🪙
           </div>
           <div>
@@ -146,7 +150,7 @@ export function MintERC20Form() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             required
-            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 focus:bg-white/8 transition-all font-medium"
+            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 focus:bg-white/8 transition-all font-medium"
           />
         </div>
 
@@ -162,12 +166,12 @@ export function MintERC20Form() {
               onChange={(e) => setRecipientAddress(e.target.value)}
               placeholder="0x..."
               required
-              className="flex-1 min-w-0 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 focus:bg-white/8 transition-all font-mono text-sm overflow-hidden"
+              className="flex-1 min-w-0 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 focus:bg-white/8 transition-all font-mono text-sm overflow-hidden"
             />
             <button
               type="button"
               onClick={handleAutoFill}
-              className="px-4 sm:px-5 py-4 text-xs sm:text-sm font-bold text-white bg-white/10 hover:bg-white/20 rounded-2xl border border-white/20 transition-all whitespace-nowrap hover:scale-105 flex-shrink-0"
+              className="px-4 sm:px-5 py-4 text-xs sm:text-sm font-bold text-white bg-white/10 hover:bg-white/15 rounded-2xl border border-white/10 transition-all whitespace-nowrap flex-shrink-0"
             >
               My Address
             </button>
@@ -194,9 +198,9 @@ export function MintERC20Form() {
         <button
           type="submit"
           disabled={isPending || isConfirming || !amount || !recipientAddress}
-          className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 rounded-2xl hover:from-orange-700 hover:via-red-700 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-orange relative overflow-hidden group"
+          className="w-full px-6 py-5 text-base font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg border border-indigo-500/20"
         >
-          <span className="relative z-10 flex items-center justify-center gap-2">
+          <span className="flex items-center justify-center gap-2">
             {isPending ? (
               <>
                 <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -222,7 +226,6 @@ export function MintERC20Form() {
               </>
             )}
           </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
         </button>
       </form>
 

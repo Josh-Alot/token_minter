@@ -26,15 +26,15 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-8">
             <div className="space-y-3">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-orange-500 via-red-600 to-orange-600 flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-2xl glow-orange">
-                  🔥
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg">
+                  BT
                 </div>
                 <div>
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-orange-400 via-red-500 to-orange-500 bg-clip-text text-transparent leading-tight">
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight">
                     BurnoutToken
                   </h1>
-                  <p className="text-base sm:text-lg text-zinc-400 font-medium mt-1">
-                    ERC-20 Token Management Platform
+                  <p className="text-base sm:text-lg text-zinc-300 font-medium mt-2">
+                    ERC‑20 & NFT tools for testing and demos
                   </p>
                 </div>
               </div>
@@ -83,8 +83,8 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-20 sm:mt-24 pt-8 border-t border-white/5 text-center text-zinc-500 text-sm relative z-10">
-          <p className="font-medium">Built with Next.js, Wagmi & Viem • Powered by Kybr on Ethereum</p>
+        <footer className="mt-20 sm:mt-24 pt-8 border-t border-white/10 text-center text-zinc-400 text-sm relative z-10">
+          <p className="font-medium">Built with Next.js • Wagmi • Viem</p>
         </footer>
       </main>
     </div>

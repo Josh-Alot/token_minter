@@ -30,7 +30,7 @@ export const CollectionsList: React.FC = () => {
     return (
       <div className="glass rounded-3xl p-8 sm:p-10">
         <div className="flex items-center justify-center">
-          <span className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></span>
+          <span className="w-8 h-8 border-2 border-indigo-400/70 border-t-transparent rounded-full animate-spin"></span>
         </div>
       </div>
     );
@@ -41,10 +41,10 @@ export const CollectionsList: React.FC = () => {
   return (
     <div className="glass rounded-3xl p-8 sm:p-10">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-2xl">
+        <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-lg">
           📚
         </div>
-        <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
           My Collections
         </h2>
       </div>

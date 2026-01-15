@@ -11,35 +11,37 @@ interface TabNavigationProps {
 
 export const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange }) => {
   return (
-    <nav className="flex items-center gap-6">
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          onTabChange('token');
-        }}
-        className={`text-base font-medium transition-colors ${
-          activeTab === 'token'
-            ? 'text-white'
-            : 'text-zinc-400 hover:text-white'
-        }`}
-      >
-        Token Minter
-      </a>
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          onTabChange('nft');
-        }}
-        className={`text-base font-medium transition-colors ${
-          activeTab === 'nft'
-            ? 'text-white'
-            : 'text-zinc-400 hover:text-white'
-        }`}
-      >
-        NFT Factory
-      </a>
+    <nav className="flex items-center">
+      <div className="glass rounded-2xl p-1 border border-white/10">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => onTabChange('token')}
+            className={[
+              'px-4 py-2 rounded-xl text-sm font-semibold',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40 focus-visible:ring-offset-0',
+              activeTab === 'token'
+                ? 'bg-white/10 text-white border border-white/10'
+                : 'text-zinc-300 hover:text-white hover:bg-white/5',
+            ].join(' ')}
+          >
+            Token
+          </button>
+          <button
+            type="button"
+            onClick={() => onTabChange('nft')}
+            className={[
+              'px-4 py-2 rounded-xl text-sm font-semibold',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40 focus-visible:ring-offset-0',
+              activeTab === 'nft'
+                ? 'bg-white/10 text-white border border-white/10'
+                : 'text-zinc-300 hover:text-white hover:bg-white/5',
+            ].join(' ')}
+          >
+            NFTs
+          </button>
+        </div>
+      </div>
     </nav>
   );
 };

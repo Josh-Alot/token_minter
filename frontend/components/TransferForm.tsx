@@ -40,9 +40,10 @@ export function TransferForm() {
       setAmount('');
       setRecipientAddress('');
       
-      // Invalidar todas as queries relacionadas ao contrato para atualizar os dados
       queryClient.invalidateQueries({
-        queryKey: [{ entity: 'readContract', address: BURNOUT_TOKEN_ADDRESS }],
+        predicate: (q) =>
+          Array.isArray(q.queryKey) &&
+          (q.queryKey[0] === 'readContract' || q.queryKey[0] === 'readContracts'),
       });
       
       setTimeout(() => {
@@ -98,7 +99,7 @@ export function TransferForm() {
     return (
       <div className="glass rounded-2xl p-8 border border-white/20 shadow-xl">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center border border-white/20">
+          <div className="w-16 h-16 mx-auto rounded-full bg-white/5 flex items-center justify-center border border-white/10">
             <svg className="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -114,7 +115,7 @@ export function TransferForm() {
   return (
     <form onSubmit={handleTransfer} className="glass rounded-3xl p-8 sm:p-10 border border-white/10 shadow-2xl transition-all duration-300 hover:border-white/15 space-y-6">
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 flex items-center justify-center text-white text-2xl font-bold shadow-xl glow-green">
+        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
           ➡️
         </div>
         <div>
@@ -140,7 +141,7 @@ export function TransferForm() {
           onChange={(e) => setAmount(e.target.value)}
           placeholder="0.0"
           required
-          className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 focus:bg-white/8 transition-all font-medium"
+          className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 focus:bg-white/8 transition-all font-medium"
         />
       </div>
 
@@ -156,7 +157,7 @@ export function TransferForm() {
             onChange={(e) => setRecipientAddress(e.target.value)}
             placeholder="0x..."
             required
-            className="flex-1 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 focus:bg-white/8 transition-all font-mono text-sm"
+            className="flex-1 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 focus:bg-white/8 transition-all font-mono text-sm"
           />
         </div>
         {address && (
@@ -179,13 +180,13 @@ export function TransferForm() {
       )}
 
       {showSuccess && (
-        <div className="p-4 glass-dark rounded-xl border border-green-500/30">
+        <div className="p-4 glass-dark rounded-xl border border-emerald-500/25">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-sm font-semibold text-green-200">
-              Transfer successful! 🎉
+            <p className="text-sm font-semibold text-emerald-200">
+              Transfer successful.
             </p>
           </div>
         </div>
@@ -194,9 +195,9 @@ export function TransferForm() {
       <button
         type="submit"
         disabled={isPending || isConfirming || !amount || !recipientAddress}
-        className="w-full px-6 py-5 text-base font-bold text-white bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-2xl hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 glow-green relative overflow-hidden group"
+        className="w-full px-6 py-5 text-base font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg border border-indigo-500/20"
       >
-        <span className="relative z-10 flex items-center justify-center gap-2">
+        <span className="flex items-center justify-center gap-2">
           {isPending ? (
             <>
               <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -222,7 +223,6 @@ export function TransferForm() {
             </>
           )}
         </span>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
       </button>
     </form>
   );
