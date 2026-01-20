@@ -11,8 +11,10 @@ import { AnimatedGlobe } from "@/components/AnimatedGlobe";
 import { TabNavigation } from "@/components/TabNavigation";
 import { NFTFactory } from "@/components/NFTFactory";
 import { CollectionsList } from "@/components/CollectionsList";
+import { ERC20Factory } from "@/components/ERC20Factory";
+import { TokensList } from "@/components/TokensList";
 
-type Tab = 'token' | 'nft';
+type Tab = 'token' | 'nft' | 'erc20';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('token');
@@ -31,7 +33,7 @@ export default function Home() {
                 </div>
                 <div>
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight">
-                    BurnoutToken
+                    Burnout
                   </h1>
                   <p className="text-base sm:text-lg text-zinc-300 font-medium mt-2">
                     ERC‑20 & NFT tools for testing and demos
@@ -65,6 +67,18 @@ export default function Home() {
                 <TransferForm />
                 <ApproveForm />
                 <BurnForm />
+              </div>
+            </>
+          ) : activeTab === 'erc20' ? (
+            <>
+              {/* ERC20 Factory Section */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                <div>
+                  <ERC20Factory />
+                </div>
+                <div>
+                  <TokensList />
+                </div>
               </div>
             </>
           ) : (

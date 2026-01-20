@@ -1,13 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getAddress, parseEther } from "viem";
+import { getAddress, parseUnits } from "viem";
 
 import { network } from "hardhat";
 
 describe("BurnoutERC20Standard", async function () {
   const TOKEN_NAME = "Burnout Standard";
   const TOKEN_SYMBOL = "BST";
-  const INITIAL_SUPPLY = parseEther("1000");
+  const TOKEN_DECIMALS = 6;
+  const INITIAL_SUPPLY = parseUnits("1000", TOKEN_DECIMALS);
 
   describe("Deployment", async function () {
     it("Should deploy with correct name, symbol and initial supply", async function () {
@@ -21,16 +22,50 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
       assert.equal(await token.read.name(), TOKEN_NAME);
       assert.equal(await token.read.symbol(), TOKEN_SYMBOL);
-      assert.equal(await token.read.decimals(), 18);
+      assert.equal(await token.read.decimals(), TOKEN_DECIMALS);
       assert.equal(await token.read.totalSupply(), INITIAL_SUPPLY);
       assert.equal(
         await token.read.balanceOf([deployer.account.address]),
         INITIAL_SUPPLY
+      );
+    });
+
+    it("Should allow only supported decimals in constructor", async function () {
+      const connection = await network.connect({
+        network: "hardhatMainnet",
+        chainType: "l1",
+      });
+      const viem = (connection as unknown as { viem: any }).viem;
+
+      // Supported decimals should deploy successfully.
+      for (const decimals of [2, 4, 6, 18]) {
+        const supply = parseUnits("1", decimals);
+        const token = await viem.deployContract("BurnoutERC20Standard", [
+          TOKEN_NAME,
+          TOKEN_SYMBOL,
+          decimals,
+          supply,
+        ]);
+        assert.equal(await token.read.decimals(), decimals);
+        assert.equal(await token.read.totalSupply(), supply);
+      }
+
+      // Unsupported decimals should revert with the custom error.
+      const invalidDecimals = 8;
+      await assert.rejects(
+        viem.deployContract("BurnoutERC20Standard", [
+          TOKEN_NAME,
+          TOKEN_SYMBOL,
+          invalidDecimals,
+          parseUnits("1", invalidDecimals),
+        ]),
+        /InvalidDecimals/
       );
     });
 
@@ -47,6 +82,7 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
@@ -85,10 +121,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const mintAmount = parseEther("100");
+      const mintAmount = parseUnits("100", TOKEN_DECIMALS);
       await token.write.mint([recipient.account.address, mintAmount]);
 
       assert.equal(
@@ -118,10 +155,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const mintAmount = parseEther("100");
+      const mintAmount = parseUnits("100", TOKEN_DECIMALS);
       const expectedTotalSupply = INITIAL_SUPPLY + mintAmount;
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
@@ -159,10 +197,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const mintAmount = parseEther("100");
+      const mintAmount = parseUnits("100", TOKEN_DECIMALS);
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
       await token.write.mint([recipient.account.address, mintAmount]);
@@ -202,10 +241,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const transferAmount = parseEther("100");
+      const transferAmount = parseUnits("100", TOKEN_DECIMALS);
       await token.write.transfer([recipient.account.address, transferAmount]);
 
       assert.equal(
@@ -229,10 +269,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const transferAmount = parseEther("100");
+      const transferAmount = parseUnits("100", TOKEN_DECIMALS);
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
       await token.write.transfer([recipient.account.address, transferAmount]);
@@ -268,10 +309,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const transferAmount = parseEther("100");
+      const transferAmount = parseUnits("100", TOKEN_DECIMALS);
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
       await token.write.transfer([recipient.account.address, transferAmount]);
@@ -309,10 +351,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const excessiveAmount = INITIAL_SUPPLY + parseEther("1");
+      const excessiveAmount = INITIAL_SUPPLY + parseUnits("1", TOKEN_DECIMALS);
 
       await assert.rejects(
         token.write.transfer([recipient.account.address, excessiveAmount]),
@@ -332,10 +375,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const approveAmount = parseEther("200");
+      const approveAmount = parseUnits("200", TOKEN_DECIMALS);
       await token.write.approve([spender.account.address, approveAmount]);
 
       assert.equal(
@@ -355,10 +399,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const approveAmount = parseEther("200");
+      const approveAmount = parseUnits("200", TOKEN_DECIMALS);
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
       await token.write.approve([spender.account.address, approveAmount]);
@@ -394,10 +439,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const approveAmount = parseEther("200");
+      const approveAmount = parseUnits("200", TOKEN_DECIMALS);
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
       await token.write.approve([spender.account.address, approveAmount]);
@@ -435,11 +481,12 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const approveAmount = parseEther("200");
-      const transferAmount = parseEther("150");
+      const approveAmount = parseUnits("200", TOKEN_DECIMALS);
+      const transferAmount = parseUnits("150", TOKEN_DECIMALS);
 
       await token.write.approve([spender.account.address, approveAmount]);
       await token.write.transferFrom(
@@ -469,10 +516,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const burnAmount = parseEther("100");
+      const burnAmount = parseUnits("100", TOKEN_DECIMALS);
       const initialBalance = await token.read.balanceOf([deployer.account.address]);
 
       await token.write.burn([burnAmount]);
@@ -495,10 +543,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const burnAmount = parseEther("100");
+      const burnAmount = parseUnits("100", TOKEN_DECIMALS);
       const expectedTotalSupply = INITIAL_SUPPLY - burnAmount;
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
@@ -532,10 +581,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const burnAmount = parseEther("100");
+      const burnAmount = parseUnits("100", TOKEN_DECIMALS);
       const deploymentBlockNumber = await publicClient.getBlockNumber();
 
       await token.write.burn([burnAmount]);
@@ -572,10 +622,11 @@ describe("BurnoutERC20Standard", async function () {
       const token = await viem.deployContract("BurnoutERC20Standard", [
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
 
-      const excessiveAmount = INITIAL_SUPPLY + parseEther("1");
+      const excessiveAmount = INITIAL_SUPPLY + parseUnits("1", TOKEN_DECIMALS);
 
       await assert.rejects(
         token.write.burn([excessiveAmount]),

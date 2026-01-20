@@ -4,6 +4,8 @@ pragma solidity ^0.8.28;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract BurnoutERC20Standard is ERC20 {
+    uint8 immutable _customDecimals;
+
     event TokenMinted(
         address indexed minter,
         address indexed to,
@@ -43,11 +45,19 @@ contract BurnoutERC20Standard is ERC20 {
         uint256 timestamp
     );
 
+    error InvalidDecimals(uint8 decimals);
+
     constructor(
         string memory _name,
         string memory _symbol,
+        uint8 _decimals,
         uint256 _initialSupply
     ) ERC20(_name, _symbol) {
+        if (_decimals != 2 && _decimals != 4 && _decimals != 6 && _decimals != 18) {
+            revert InvalidDecimals(_decimals);
+        }
+
+        _customDecimals = _decimals;
         _mint(msg.sender, _initialSupply); // private call to deploy token, not create new tokens
 
         emit ContractEvent("TOKEN_DEPLOYED", msg.sender, address(0), _initialSupply, block.timestamp);
@@ -83,5 +93,9 @@ contract BurnoutERC20Standard is ERC20 {
 
     function burn(uint256 amount) public {
         _burn(msg.sender, amount);
+    }
+
+    function decimals() public view virtual override returns (uint8) {
+        return _customDecimals;
     }
 }

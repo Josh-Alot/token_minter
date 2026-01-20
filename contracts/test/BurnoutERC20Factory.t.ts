@@ -1,13 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getAddress, parseEther } from "viem";
+import { getAddress, parseUnits } from "viem";
 
 import { network } from "hardhat";
 
 describe("BurnoutERC20Factory", async function () {
   const TOKEN_NAME = "Factory Token";
   const TOKEN_SYMBOL = "FCT";
-  const INITIAL_SUPPLY = parseEther("1000");
+  const TOKEN_DECIMALS = 8;
+  const INITIAL_SUPPLY = parseUnits("1000", TOKEN_DECIMALS);
 
   describe("Deployment", async function () {
     it("Should deploy factory contract", async function () {
@@ -37,6 +38,7 @@ describe("BurnoutERC20Factory", async function () {
       const hash = await factory.write.createToken([
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
       await publicClient.waitForTransactionReceipt({ hash });
@@ -52,6 +54,7 @@ describe("BurnoutERC20Factory", async function () {
       const token = await viem.getContractAt("BurnoutERC20Standard", tokenAddress);
       assert.equal(await token.read.name(), TOKEN_NAME);
       assert.equal(await token.read.symbol(), TOKEN_SYMBOL);
+      assert.equal(await token.read.decimals(), TOKEN_DECIMALS);
       assert.equal(await token.read.totalSupply(), INITIAL_SUPPLY);
 
       // Important behavior note:
@@ -75,6 +78,7 @@ describe("BurnoutERC20Factory", async function () {
       const hash = await factory.write.createToken([
         TOKEN_NAME,
         TOKEN_SYMBOL,
+        TOKEN_DECIMALS,
         INITIAL_SUPPLY,
       ]);
       await publicClient.waitForTransactionReceipt({ hash });
@@ -94,6 +98,7 @@ describe("BurnoutERC20Factory", async function () {
       );
       assert.equal(events[0].args.name, TOKEN_NAME);
       assert.equal(events[0].args.symbol, TOKEN_SYMBOL);
+      assert.equal(events[0].args.decimals, TOKEN_DECIMALS);
       assert.equal(events[0].args.initialSupply, INITIAL_SUPPLY);
     });
 
@@ -107,17 +112,22 @@ describe("BurnoutERC20Factory", async function () {
       const [creator] = await viem.getWalletClients();
       const factory = await viem.deployContract("BurnoutERC20Factory", []);
 
+      const decimals1 = 6;
+      const decimals2 = 18;
+
       const hash1 = await factory.write.createToken([
         "Token 1",
         "TK1",
-        parseEther("10"),
+        decimals1,
+        parseUnits("10", decimals1),
       ]);
       await publicClient.waitForTransactionReceipt({ hash: hash1 });
 
       const hash2 = await factory.write.createToken([
         "Token 2",
         "TK2",
-        parseEther("20"),
+        decimals2,
+        parseUnits("20", decimals2),
       ]);
       await publicClient.waitForTransactionReceipt({ hash: hash2 });
 
@@ -149,13 +159,13 @@ describe("BurnoutERC20Factory", async function () {
       const factory = await viem.deployContract("BurnoutERC20Factory", []);
 
       const hash1 = await factory.write.createToken(
-        ["User1 Token", "U1", parseEther("1")],
+        ["User1 Token", "U1", TOKEN_DECIMALS, parseUnits("1", TOKEN_DECIMALS)],
         { account: creator1.account }
       );
       await publicClient.waitForTransactionReceipt({ hash: hash1 });
 
       const hash2 = await factory.write.createToken(
-        ["User2 Token", "U2", parseEther("2")],
+        ["User2 Token", "U2", TOKEN_DECIMALS, parseUnits("2", TOKEN_DECIMALS)],
         { account: creator2.account }
       );
       await publicClient.waitForTransactionReceipt({ hash: hash2 });
