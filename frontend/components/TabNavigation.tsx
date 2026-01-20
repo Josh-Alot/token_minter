@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-type Tab = 'token' | 'nft';
+type Tab = 'token' | 'nft' | 'erc20';
 
 interface TabNavigationProps {
   activeTab: Tab;
@@ -25,7 +25,20 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabCh
                 : 'text-zinc-300 hover:text-white hover:bg-white/5',
             ].join(' ')}
           >
-            Token
+            BURN
+          </button>
+          <button
+            type="button"
+            onClick={() => onTabChange('erc20')}
+            className={[
+              'px-4 py-2 rounded-xl text-sm font-semibold',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40 focus-visible:ring-offset-0',
+              activeTab === 'erc20'
+                ? 'bg-white/10 text-white border border-white/10'
+                : 'text-zinc-300 hover:text-white hover:bg-white/5',
+            ].join(' ')}
+          >
+            Token Factory
           </button>
           <button
             type="button"
@@ -38,7 +51,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabCh
                 : 'text-zinc-300 hover:text-white hover:bg-white/5',
             ].join(' ')}
           >
-            NFTs
+            NFT Factory
           </button>
         </div>
       </div>

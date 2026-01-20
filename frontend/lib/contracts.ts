@@ -382,4 +382,115 @@ export const BURNOUT_NFT_FACTORY_ABI = [
 
 // Endereço do contrato Factory - será configurado após deploy
 export const BURNOUT_NFT_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_NFT_FACTORY_ADDRESS as `0x${string}` | undefined;
+
+// ABI do contrato BurnoutERC20Factory
+export const BURNOUT_ERC20_FACTORY_ABI = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'creator',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'name',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'symbol',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'uint8',
+        name: 'decimals',
+        type: 'uint8',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'initialSupply',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256',
+      },
+    ],
+    name: 'TokenDeployed',
+    type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'name',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'symbol',
+        type: 'string',
+      },
+      {
+        internalType: 'uint8',
+        name: 'decimals',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint256',
+        name: 'initialSupply',
+        type: 'uint256',
+      },
+    ],
+    name: 'createToken',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'tokensByUser',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const;
+
+// Endereço do contrato ERC20 Factory
+// - defaults to the latest deployed contract address
+// - can be overridden via NEXT_PUBLIC_ERC20_FACTORY_ADDRESS
+export const BURNOUT_ERC20_FACTORY_ADDRESS = (process.env.NEXT_PUBLIC_ERC20_FACTORY_ADDRESS ??
+  '0xa5f19e26e94685e1cb1681c743745f98ab23bc5f') as `0x${string}`;
   
