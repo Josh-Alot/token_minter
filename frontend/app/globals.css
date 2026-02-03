@@ -113,7 +113,8 @@ select,
 }
 
 .glow-red {
-  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.18);
+  /* Kept for backwards compatibility, but no longer red */
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.16);
 }
 
 .glow-yellow {

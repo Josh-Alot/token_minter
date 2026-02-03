@@ -1,18 +1,10 @@
 'use client';
 
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
+import type { Connector } from 'wagmi';
 import { formatAddress } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-
-// Extend Window interface para incluir ethereum
-declare global {
-  interface Window {
-    ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>;
-      isMetaMask?: boolean;
-    };
-  }
-}
+import { WalletSelectModal } from '@/components/WalletSelectModal';
 
 export function WalletConnect() {
   const { address, isConnected, chain } = useAccount();
@@ -22,13 +14,16 @@ export function WalletConnect() {
   const [error, setError] = useState<string | null>(null);
   const [hasAttemptedConnect, setHasAttemptedConnect] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
-  // Evitar erro de hidratação - só renderizar estado correto após montagem no cliente
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Limpar erro quando connectors mudarem
+  useEffect(() => {
+    if (isConnected) setShowWalletModal(false);
+  }, [isConnected]);
+
   useEffect(() => {
     if (connectors.length > 0) {
       setError(null);
@@ -36,18 +31,14 @@ export function WalletConnect() {
     }
   }, [connectors]);
 
-  // Atualizar erro quando connectError mudar
   useEffect(() => {
     if (connectError && hasAttemptedConnect) {
       const errorMessage = connectError.message || connectError.toString();
-      
-      console.log('Connect error detected:', errorMessage, 'Full error:', connectError);
-      
-      // Mensagens de erro mais amigáveis
+
       if (errorMessage.includes('rejected') || errorMessage.includes('User rejected')) {
         setError('Connection rejected. Please approve the connection request in your wallet.');
       } else if (errorMessage.includes('must has at least one account') || errorMessage.includes('no accounts')) {
-        setError('Your wallet has no accounts. Please create an account in your wallet first (e.g., MetaMask).');
+        setError('Your wallet has no accounts. Please create an account in your wallet first.');
       } else if (errorMessage.includes('not authorized')) {
         setError('Connection not authorized. Please approve the connection in your wallet.');
       } else {
@@ -60,87 +51,17 @@ export function WalletConnect() {
     }
   }, [connectError, hasAttemptedConnect]);
 
-  const handleConnect = async () => {
+  const handleConnect = (connector: Connector) => {
     setError(null);
-    setHasAttemptedConnect(false);
-    
-    console.log('=== Connect Button Clicked ===');
-    console.log('Available connectors:', connectors.map(c => ({ id: c.id, name: c.name, type: c.type })));
-    
-    if (!connectors || connectors.length === 0) {
-      setError('No wallet connectors available. Please install MetaMask or another Web3 wallet.');
-      console.error('No connectors available');
-      return;
-    }
-
-    // Selecionar connector - priorizar MetaMask, depois injected, depois qualquer um disponível
-    // Não verificar 'ready' pois alguns connectors (como metaMaskSDK) não expõem essa propriedade
-    let connector = connectors.find(c => c.id === 'metaMask' || c.id === 'metaMaskSDK') || 
-                    connectors.find(c => c.id === 'injected') || 
-                    connectors[0];
-
-    console.log('Selected connector:', connector?.id, connector?.name, 'Type:', connector?.type);
-
-    if (!connector) {
-      setError('No available wallet connector found.');
-      console.error('No connector found');
-      return;
-    }
-
-    // Verificar se o connector tem os métodos necessários ao invés de verificar 'ready'
-    if (!connector.connect || typeof connector.connect !== 'function') {
-      setError('Wallet connector is not properly initialized. Please refresh the page.');
-      console.error('Connector missing connect method:', connector);
-      return;
-    }
-
-    try {
-      console.log('Attempting to connect with connector:', connector.id);
-      setHasAttemptedConnect(true);
-      
-      // Verificar se a wallet tem contas antes de conectar (opcional, pode pular se não conseguir)
-      if (typeof window !== 'undefined' && window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-          console.log('Current accounts:', accounts);
-          if (!accounts || accounts.length === 0) {
-            setError('Your wallet has no accounts. Please create an account in MetaMask first, then try again.');
-            setHasAttemptedConnect(false);
-            return;
-          }
-        } catch (checkError) {
-          console.warn('Could not check accounts (continuing anyway):', checkError);
-          // Continuar mesmo se não conseguir verificar
-        }
-      }
-      
-      console.log('Calling connect()...');
-      connect({ connector });
-      console.log('connect() called successfully, waiting for user response...');
-    } catch (err) {
-      console.error('Error in handleConnect:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to connect wallet';
-      
-      // Mensagens de erro mais amigáveis
-      if (errorMessage.includes('rejected') || errorMessage.includes('User rejected')) {
-        setError('Connection rejected. Please approve the connection request in your wallet.');
-      } else if (errorMessage.includes('must has at least one account') || errorMessage.includes('no accounts')) {
-        setError('Your wallet has no accounts. Please create an account in your wallet first (e.g., MetaMask).');
-      } else {
-        setError(errorMessage);
-      }
-      
-      setHasAttemptedConnect(false);
-    }
+    setHasAttemptedConnect(true);
+    setShowWalletModal(false);
+    connect({ connector });
   };
 
   const handleSwitchChain = () => {
-    // Switch para Sepolia testnet (chainId: 11155111)
     switchChain({ chainId: 11155111 });
   };
-
-  // Durante SSR ou antes da hidratação, renderizar apenas o botão de conectar
-  // Isso evita diferenças entre servidor e cliente
+  
   if (!mounted) {
     return (
       <div className="flex flex-col items-end gap-2">
@@ -193,7 +114,7 @@ export function WalletConnect() {
   return (
     <div className="flex flex-col items-end gap-3">
       <button
-        onClick={handleConnect}
+        onClick={() => setShowWalletModal(true)}
         disabled={isPending || connectors.length === 0}
         className="px-8 py-3 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl border border-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
       >
@@ -217,31 +138,28 @@ export function WalletConnect() {
         </span>
       </button>
       {error && (
-        <div className="max-w-xs p-4 glass-dark rounded-xl border border-red-500/30 text-xs text-red-200 space-y-2 shadow-lg">
+        <div className="max-w-xs p-4 glass-dark rounded-xl border border-amber-500/25 text-xs text-amber-200 space-y-2 shadow-lg">
           <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p className="font-semibold">Connection Error</p>
           </div>
-          <p className="text-red-300">{error}</p>
-          {error.includes('no accounts') && (
-            <div className="mt-3 pt-3 border-t border-red-500/30">
-              <p className="font-medium mb-2 text-red-200">How to fix:</p>
-              <ol className="list-decimal list-inside space-y-1 text-[11px] text-red-300">
-                <li>Open MetaMask extension</li>
-                <li>Click "Create Account" or "Import Account"</li>
-                <li>Complete the account setup</li>
-                <li>Try connecting again</li>
-              </ol>
-            </div>
-          )}
+          <p className="text-amber-200/90">{error}</p>
         </div>
       )}
       {connectors.length === 0 && !error && (
         <p className="text-xs text-zinc-400 max-w-xs text-right">
-          No wallet detected. Install MetaMask or another Web3 wallet.
+          No wallet detected. Install a Web3 wallet.
         </p>
+      )}
+      {showWalletModal && (
+        <WalletSelectModal
+          connectors={connectors}
+          isPending={isPending}
+          onSelect={handleConnect}
+          onClose={() => setShowWalletModal(false)}
+        />
       )}
     </div>
   );

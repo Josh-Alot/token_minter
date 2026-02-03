@@ -171,7 +171,7 @@ export function BurnForm() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.0"
             required
-            className="flex-1 min-w-0 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-rose-500/40 focus:border-rose-500/30 focus:bg-white/8 transition-all font-medium overflow-hidden"
+            className="flex-1 min-w-0 px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 focus:bg-white/8 transition-all font-medium overflow-hidden"
           />
           {balance !== undefined && (
             <button
@@ -191,14 +191,14 @@ export function BurnForm() {
       </div>
 
       {error && (
-        <div className="p-4 glass-dark rounded-xl border border-red-500/30 break-words overflow-hidden">
+        <div className="p-4 glass-dark rounded-xl border border-amber-500/25 break-words overflow-hidden">
           <div className="flex items-center gap-2 mb-1">
-            <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-amber-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-sm font-semibold text-red-200">Error</p>
+            <p className="text-sm font-semibold text-amber-200">Error</p>
           </div>
-          <p className="text-sm text-red-300 break-words overflow-wrap-anywhere">{error.message}</p>
+          <p className="text-sm text-amber-200/90 break-words overflow-wrap-anywhere">{error.message}</p>
         </div>
       )}
 
@@ -218,7 +218,7 @@ export function BurnForm() {
       <button
         type="submit"
         disabled={isPending || isConfirming || !amount || (balance !== undefined && parseEther(amount || '0') > balance)}
-        className="w-full px-6 py-5 text-base font-bold text-white bg-rose-600 hover:bg-rose-500 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg border border-rose-500/20"
+        className="w-full px-6 py-5 text-base font-bold text-white bg-amber-600 hover:bg-amber-500 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg border border-amber-500/20"
       >
         <span className="flex items-center justify-center gap-2">
           {isPending ? (

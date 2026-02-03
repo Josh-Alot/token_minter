@@ -184,14 +184,14 @@ export function MintERC20Form() {
         </div>
 
         {error && (
-          <div className="p-4 glass-dark rounded-xl border border-red-500/30 break-words overflow-hidden">
+          <div className="p-4 glass-dark rounded-xl border border-amber-500/25 break-words overflow-hidden">
             <div className="flex items-center gap-2 mb-1">
-              <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-amber-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="text-sm font-semibold text-red-200">Error</p>
+              <p className="text-sm font-semibold text-amber-200">Error</p>
             </div>
-            <p className="text-sm text-red-300 break-words overflow-wrap-anywhere">{error.message}</p>
+            <p className="text-sm text-amber-200/90 break-words overflow-wrap-anywhere">{error.message}</p>
           </div>
         )}
 

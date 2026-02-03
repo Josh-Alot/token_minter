@@ -222,7 +222,7 @@ export const ERC20Factory: React.FC = () => {
         </div>
 
         {error && (
-          <div className="p-4 rounded-2xl bg-red-500/20 border border-red-500/50 text-red-300 text-sm">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-200 text-sm">
             <p className="font-bold mb-1">Error creating token</p>
             <p>{error.message || error.toString() || 'Failed to create token'}</p>
             {Boolean(error.cause) && <p className="mt-2 text-xs opacity-75">{String(error.cause)}</p>}

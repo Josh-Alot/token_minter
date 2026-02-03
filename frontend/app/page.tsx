@@ -25,11 +25,12 @@ export default function Home() {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 max-w-7xl">
         {/* Header Section */}
         <header className="mb-12 sm:mb-16 relative z-10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-8">
+          <div className="glass rounded-3xl p-6 sm:p-8 border border-white/10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 sm:gap-8">
             <div className="space-y-3">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg">
-                  BT
+                  TM
                 </div>
                 <div>
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight">
@@ -44,6 +45,7 @@ export default function Home() {
             <div className="flex items-center gap-6">
               <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
               <WalletConnect />
+            </div>
             </div>
           </div>
         </header>
